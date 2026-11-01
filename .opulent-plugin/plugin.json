@@ -1,8 +1,9 @@
 {
-  "name": "devin-marketplace",
-  "description": "Devin's plugin marketplace: a plugin for every MCP server Devin hosts, plus third-party plugins pinned to reviewed commits.",
-  "homepage": "https://github.com/CognitionAI/devin-marketplace",
-  "repository": "https://github.com/CognitionAI/devin-marketplace",
+  "name": "opulent-marketplace",
+  "displayName": "Opulent marketplace",
+  "description": "Opulent's plugin marketplace: a plugin for every MCP server Opulent hosts, plus third-party plugins pinned to reviewed commits.",
+  "homepage": "https://github.com/OpulentiaAI/devin-marketplace",
+  "repository": "https://github.com/OpulentiaAI/devin-marketplace",
   "skills": [],
   "optionalPlugins": [
     "./plugins/activecampaign",

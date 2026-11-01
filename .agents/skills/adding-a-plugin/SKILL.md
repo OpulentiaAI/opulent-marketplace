@@ -1,33 +1,45 @@
 # Adding a plugin
 
-The repo is itself a Devin plugin: `.devin-plugin/plugin.json` lists every
-offering under `optionalPlugins`, and that file is the only thing consumers
-read. Two kinds of entry: `"./plugins/<slug>"` for a plugin authored here (every
-MCP server Devin hosts has one), and a `{ "source", "url", ["path",] "sha" }`
-object for a third-party plugin pinned to an exact commit. Entries are sorted
-and each identity appears once; `python3 scripts/validate.py` enforces all of
-this and CI runs it.
+The repo is itself an Opulent plugin: `.opulent-plugin/plugin.json` lists every
+offering under `optionalPlugins`, and that file plus the catalog generated from it
+are the only things consumers read. There are two kinds of entry:
+`"./plugins/<slug>"` for a plugin authored here (every MCP server Opulent hosts has
+one), and a `{ "source", "url", ["path",] "sha" }` object for a third-party plugin
+pinned to an exact commit. Entries are sorted and each identity appears once.
+`python3 scripts/validate.py` enforces all of this, and CI runs it.
+
+Opulent still reads the Devin layout: a plugin whose manifest is
+`.devin-plugin/plugin.json` is accepted when it has no `.opulent-plugin/plugin.json`,
+and the same goes for the root manifest. New plugins use `.opulent-plugin`. A plugin
+must not have both.
 
 ## An MCP server we host
 
-1. Create `plugins/<slug>/.devin-plugin/plugin.json`, where `<slug>` is the
+1. Create `plugins/<slug>/.opulent-plugin/plugin.json`, where `<slug>` is the
    marketplace server slug:
-   * `name` is the slug; `displayName` is the server definition's `name`
-     (the human title, e.g. `"MySQL"`); `description`, `homepage`,
-     `repository`, `keywords` come from the server definition too.
-   * Check the brand mark in as `plugins/<slug>/logo.svg` (or `.png`/`.jpg`)
-     and set `"logo": "logo.svg"` — a path relative to the plugin directory,
-     as in Cursor's plugin format. Prefer this over an absolute `https` URL so
-     cards never load images from a third-party host.
+   * `name` is the slug. `displayName` is the human title (e.g. `"MySQL"`).
+     `description`, `homepage`, `repository` and `keywords` describe the
+     server, and the first keyword is the category Opulent shows.
+   * Check the brand mark in as `plugins/<slug>/logo.svg` (or `.png`/`.jpg`/`.webp`,
+     at most 256 KiB) and set `"logo": "logo.svg"`, a path relative to the plugin
+     directory. Opulent serves it from its own origin, so cards never load images
+     from a third-party host.
    * `mcpServers` declares exactly one server, keyed by the slug: `command` +
-     `args` + `env` for stdio, or `url` (+ `headers`) for HTTP.
+     `args` + `env` for stdio, or `url` (+ `headers`) for HTTP. A stdio
+     server is installed and started on the Opulent machine of each run that
+     uses the plugin, so its command must run on a stock Linux machine (`npx`,
+     `uvx` or a binary the command itself fetches).
    * Never check in a credential. Anything a user supplies is a plain
      `${<NAME>}` placeholder, resolved from the credentials saved on the
-     user's installation (no `MCP_` prefix). A stdio `env` value must
-     reference its own key (`"AWS_PROFILE": "${AWS_PROFILE}"`) because a saved
-     credential replaces the env entry with the same key; in `args` and
-     `headers` the placeholder is the credential's only name.
-2. Add `"./plugins/<slug>"` to `optionalPlugins` in `.devin-plugin/plugin.json`.
+     user's installation (no `MCP_` prefix). When a user installs the plugin,
+     Opulent asks for exactly these names in a secure form, or routes into OAuth
+     when the server uses it. A stdio `env` value must reference its own key
+     (`"AWS_PROFILE": "${AWS_PROFILE}"`) because a saved credential replaces the
+     env entry with the same key. In `args` and `headers` the placeholder is the
+     credential's only name. `${PLUGIN_ROOT}` is the installed plugin directory.
+   * `dependencies` (optional) lists the slugs of other plugins authored here
+     that must be installed with this one.
+2. Add `"./plugins/<slug>"` to `optionalPlugins` in `.opulent-plugin/plugin.json`.
 
 ## A third-party plugin
 
@@ -37,33 +49,21 @@ this and CI runs it.
    * plugin inside a repository: `{ "source": "git-subdir", "url": "...", "path": "<dir>", "sha": "<40-hex>" }`
 
    Always pin a full 40-hex commit sha, never a branch or tag. Do not add
-   display metadata; the plugin's own manifest at that sha supplies it. If we
-   host the same integration ourselves, author it under `plugins/` instead of
-   pointing upstream.
-
-## Testing your plugin
-
-`validate.py` only checks the manifest's shape; before opening a PR, install
-the plugin from your checkout and have a session call one of its tools.
-
-* Locally: `devin plugins install --local ./plugins/<slug>`. The directory is
-  used in place, so edits apply on the next session. Export any `${<NAME>}`
-  credential the server needs, then start `devin` and use it.
-* In Devin Cloud, get it into **Customize → Plugins** at personal scope by any
-  of: **Add plugin → Upload .zip** with a zip of `plugins/<slug>`; **Add
-  plugin → From repository** with your fork and subdirectory `plugins/<slug>`
-  (installs the fork's default branch); or a session on your branch where you
-  ask Devin to install your plugin as a personal plugin (it uploads the
-  directory, you approve). Then start a new session and have Devin call a
-  tool: an MCP that needs OAuth prompts you to authorize it in chat; one that
-  needs a `${<NAME>}` credential has to be connected first from the plugin's
-  Connect button in Customize.
+   display metadata. The plugin's own manifest at that sha supplies it, and
+   `--fetch` copies it into the catalog. Nothing else from the upstream repo
+   is copied here. If we host the same integration ourselves, author it under
+   `plugins/` instead of pointing upstream.
 
 ## Both
 
-1. Run `python3 scripts/validate.py --fix` to sort and format the manifest,
-   then `python3 scripts/validate.py --fetch` to confirm upstream pins resolve.
-2. To bump an upstream plugin, change its `sha`. To remove one, delete its
-   entry (and its `plugins/<slug>` directory if it was authored here).
-3. Consumers pin this repo by commit; after the change lands on `main`, bump
-   their pin to the new sha.
+1. Run `python3 scripts/validate.py --fix` to sort and format the manifest and
+   regenerate `catalog.json` and `catalog/bundles/`. Add `--fetch` whenever an
+   upstream pin was added or changed: it confirms the pin resolves and records
+   its listing. Commit the generated files with the change.
+2. To bump an upstream plugin, change its `sha` and run `--fix --fetch`. To
+   remove one, delete its entry (and its `plugins/<slug>` directory if it was
+   authored here), then run `--fix`.
+3. Consumers pin this repo by commit. After the change lands on `main`, bump
+   Opulent's pin to the new sha. The pin is `OPULENT_MARKETPLACE_SOURCE` in
+   opulentagentasync's `packages/plugin-runtime/src/marketplace.ts`, and a
+   deployment can override it with `OPULENT_MARKETPLACE_COMMIT`.
