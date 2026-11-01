@@ -1,10 +1,11 @@
-"""Mock tests for the Entire OIDC session template that the Buildkite and Depot plugins ship.
+"""Mock tests for the Entire OIDC session template (plugins/*/skills/entire-oidc-session), for Buildkite and Depot jobs.
 
 Run: python3 -m unittest discover -s tests -v
 
 A loopback server stands in for Entire's token endpoint, Entire's control plane and Depot's OIDC token endpoint, and
 a fake buildkite-agent stands in for the Buildkite agent. A curl shim records every command line, so the tests prove
-that no token reaches argv, stdout or stderr and that only the command after "--" receives the minted session.
+that no token reaches argv, stdout, stderr, a shell trace or a file, and that only the command after "--" receives
+the minted session.
 """
 
 from __future__ import annotations
@@ -43,6 +44,7 @@ class Entire(http.server.BaseHTTPRequestHandler):
     exchanges: list[dict] = []
     refuse_exchange = False
     refuse_session = False
+    answer: tuple[int, dict] | None = None
 
     def log_message(self, *args: object) -> None:
         pass
@@ -62,6 +64,8 @@ class Entire(http.server.BaseHTTPRequestHandler):
         form = {key: values[0] for key, values in form.items()}
         form["client"] = base64.b64decode(self.headers.get("Authorization", "Basic ").split(" ", 1)[1]).decode()
         Entire.exchanges.append(form)
+        if Entire.answer is not None:
+            return self.reply(*Entire.answer)
         if Entire.refuse_exchange or form.get("subject_token") not in (CI_TOKEN, DEPOT_CI_TOKEN):
             return self.reply(400, {"error": "invalid_grant", "error_description": "no binding matches " + form.get("subject_token", "")})
         self.reply(200, {"access_token": SESSION, "issued_token_type": "urn:ietf:params:oauth:token-type:access_token", "token_type": "Bearer", "expires_in": 900})
@@ -83,7 +87,7 @@ FAKE_AGENT = r"""#!/usr/bin/env bash
 printf '%s\n' "$*" >> "$FAKE_LOG/agent-argv"
 case "$1 $2" in
   "oidc request-token") printf '%s' "$FAKE_CI_TOKEN" ;;
-  "redactor add") [ "$3" = --help ] && exit 0; cat > "$FAKE_LOG/redacted" ;;
+  "redactor add") [ "$3" = --help ] && exit 0; sha256sum | cut -d" " -f1 > "$FAKE_LOG/redacted" ;;
   *) exit 2 ;;
 esac
 """
@@ -112,6 +116,7 @@ class MintEntireSession(unittest.TestCase):
         Entire.exchanges = []
         Entire.refuse_exchange = False
         Entire.refuse_session = False
+        Entire.answer = None
         self.work = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.work)
         bin_dir = self.work / "bin"
@@ -128,16 +133,19 @@ class MintEntireSession(unittest.TestCase):
             "ENTIRE_TOKEN_URL": self.base + "/oauth/token",
             "ENTIRE_API_URL": self.base,
             "ENTIRE_OIDC_ALLOW_LOOPBACK_HTTP": "1",
+            "HOME": str(self.work),
+            "TMPDIR": str(self.work),
         }
 
-    def run_script(self, *args: str, env: dict | None = None) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(["bash", str(SCRIPTS[0]), *args], env={**self.env, **(env or {})}, capture_output=True, text=True, timeout=60)
+    def run_script(self, *args: str, env: dict | None = None, shell: tuple[str, ...] = ("bash",)) -> subprocess.CompletedProcess[str]:
+        return subprocess.run([*shell, str(SCRIPTS[0]), *args], env={**self.env, **(env or {})}, capture_output=True, text=True, timeout=60)
 
     def child(self) -> list[str]:
         return ["--", "bash", "-c", 'printf %s "$ENTIRE_TOKEN" | sha256sum | cut -d" " -f1 > "$FAKE_LOG/child"']
 
     def assert_no_secret_leaked(self, result: subprocess.CompletedProcess[str]) -> None:
-        logs = [result.stdout, result.stderr] + [path.read_text() for path in self.work.glob("*-argv")]
+        files = [path.read_text(errors="replace") for path in self.work.rglob("*") if path.is_file() and path.parent.name != "bin"]
+        logs = [result.stdout, result.stderr, *files]
         for secret in SECRETS:
             for log in logs:
                 self.assertNotIn(secret, log)
@@ -153,7 +161,7 @@ class MintEntireSession(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("minted an Entire session for " + ACCOUNT + " through buildkite OIDC", result.stdout)
         self.assertEqual((self.work / "child").read_text().strip(), hashlib.sha256(SESSION.encode()).hexdigest())
-        self.assertEqual((self.work / "redacted").read_text(), SESSION)
+        self.assertEqual((self.work / "redacted").read_text().strip(), hashlib.sha256(SESSION.encode()).hexdigest())
         self.assertIn("oidc request-token --audience https://us.auth.entire.io --lifetime 300", (self.work / "agent-argv").read_text())
         [exchange] = Entire.exchanges
         self.assertEqual(exchange, {
@@ -198,6 +206,41 @@ class MintEntireSession(unittest.TestCase):
         self.assertFalse((self.work / "child").exists())
         self.assert_no_secret_leaked(result)
 
+    def test_a_shell_trace_never_prints_a_token(self) -> None:
+        for shell, env in ((("bash", "-x"), {}), (("bash",), {"SHELLOPTS": "xtrace"})):
+            with self.subTest(shell=shell, env=env):
+                result = self.run_script("--provider", "buildkite", "--check", *self.child(), env=env, shell=shell)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assert_no_secret_leaked(result)
+
+    def test_an_exchange_answer_needs_both_success_and_a_session(self) -> None:
+        for answer in ((200, {"token_type": "Bearer"}), (200, {"access_token": "not-a-jwt"}), (400, {"access_token": SESSION, "error": "invalid_grant"})):
+            with self.subTest(answer=answer):
+                Entire.answer = answer
+                result = self.run_script("--provider", "buildkite", *self.child())
+                self.assertEqual(result.returncode, 77)
+                self.assertFalse((self.work / "child").exists())
+                self.assert_no_secret_leaked(result)
+
+    def test_a_ci_token_that_is_not_a_jwt_stops_before_the_exchange(self) -> None:
+        result = self.run_script("--provider", "buildkite", *self.child(), env={"FAKE_CI_TOKEN": "agent-error-text"})
+        self.assertEqual(result.returncode, 69)
+        self.assertEqual(Entire.exchanges, [])
+
+    def test_malformed_depot_request_credentials_never_reach_curl(self) -> None:
+        url = self.base + "/depot/token?run=7"
+        for env in (
+            {"ACTIONS_ID_TOKEN_REQUEST_URL": url + '"\noutput = "' + str(self.work / "stolen"), "ACTIONS_ID_TOKEN_REQUEST_TOKEN": REQUEST_TOKEN},
+            {"ACTIONS_ID_TOKEN_REQUEST_URL": url, "ACTIONS_ID_TOKEN_REQUEST_TOKEN": REQUEST_TOKEN + '"\nproxy = "http://127.0.0.1:9'},
+            {"ACTIONS_ID_TOKEN_REQUEST_URL": "file:///etc/passwd?", "ACTIONS_ID_TOKEN_REQUEST_TOKEN": REQUEST_TOKEN},
+        ):
+            with self.subTest(env=env):
+                result = self.run_script("--provider", "depot", *self.child(), env=env)
+                self.assertEqual(result.returncode, 69)
+                self.assertIn("malformed", result.stderr)
+                self.assertFalse((self.work / "curl-argv").exists())
+                self.assertFalse((self.work / "stolen").exists())
+
     def test_check_alone_exits_after_verifying(self) -> None:
         result = self.run_script("--provider", "buildkite", "--check")
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -215,6 +258,9 @@ class MintEntireSession(unittest.TestCase):
                 self.assertEqual(result.returncode, 64)
                 self.assertIn(message, result.stderr)
         self.assertEqual(self.run_script("--provider", "buildkite").returncode, 64)
+        missing = self.run_script("--provider")
+        self.assertEqual(missing.returncode, 64)
+        self.assertIn("--provider needs", missing.stderr)
         self.assertEqual(self.run_script(*self.child(), env={"BUILDKITE_JOB_ID": ""}).returncode, 64)
         self.assertEqual(Entire.exchanges, [])
 
