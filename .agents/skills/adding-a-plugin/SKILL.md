@@ -55,6 +55,51 @@ must not have both.
      that must be installed with this one.
 2. Add `"./plugins/<slug>"` to `optionalPlugins` in `.opulent-plugin/plugin.json`.
 
+## A plugin with shell secrets
+
+For a plugin whose skills run a CLI that reads a token from the shell (Depot's
+`@depot/cli` reads `DEPOT_TOKEN`), declare the names in a top-level `secrets`
+object instead of, or beside, an MCP server. Opulent asks the owner for each one
+and writes the saved values into the machine's login environment for runs that
+use the plugin.
+
+```json
+"secrets": {
+  "DEPOT_TOKEN": { "description": "Depot API token (Organization settings → API tokens).", "optional": false }
+},
+"connectionCheck": {
+  "command": "npx",
+  "args": ["-y", "@depot/cli@2.101.0", "projects", "list", "--output", "json"],
+  "allowedHosts": ["api.depot.dev"],
+  "timeoutSeconds": 60
+}
+```
+
+* `secrets` holds 1 to 16 names matching `^[A-Z][A-Z0-9_]{0,63}$`. Names the
+  machine relies on (`PATH`, `HOME`, `NODE_OPTIONS`, `OP_SERVICE_ACCOUNT_TOKEN`,
+  anything starting `LD_`, `OPULENT_`, `CONVEX_` or `RUNTIME_`, and the rest
+  `scripts/validate.py` lists) are refused. Each entry has only a `description`
+  (1 to 512 characters) and an optional boolean `optional`; a manifest never
+  carries a value or a default. A secret name must not repeat an env key of the
+  plugin's MCP server.
+* `connectionCheck` is optional and needs `secrets`. It runs `npx` or `uvx`
+  with a pinned package (`pkg@1.2.3`, or `pkg==1.2.3` for `uvx`; an unpinned or
+  `@latest` package is refused), no `${...}` placeholder in `args` (secrets
+  reach it through its environment), 1 to 16 `allowedHosts`, and
+  `timeoutSeconds` from 5 to 120 (default 60). Exit status 0 marks the plugin
+  connected; its output is discarded. Without a check the plugin reads as
+  configured once every required secret is saved.
+
+### op:// references
+
+An owner can save any secret, a plugin shell secret or an MCP `${NAME}`
+credential, as a 1Password secret reference (`op://<vault>/<item>/<field>`)
+once the [1Password plugin](../../../plugins/1password) is connected. Opulent
+resolves it at runtime with the owner's own service account token, which is never
+exported to the machine or an MCP server. Plugin authors change nothing for this.
+The rules (reference format, resolution, failure codes and connection states)
+are in the secret-references contract owned by AUTO-56 (DEF-155).
+
 ## A third-party plugin
 
 1. Review the vendor and the exact upstream commit you are endorsing.

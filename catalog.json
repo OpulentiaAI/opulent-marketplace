@@ -5,6 +5,37 @@
  "description": "Opulent's plugin marketplace: a plugin for every MCP server Opulent hosts, plus third-party plugins pinned to reviewed commits.",
  "plugins": [
   {
+   "name": "1password",
+   "displayName": "1Password",
+   "description": "Connect a 1Password service account so other plugins' secrets can be saved as op:// secret references that Opulent resolves at runtime, instead of pasting the values. Only Opulent's resolver reads the service account token: it is never exported to a machine's shell or to an MCP server. Create the service account with read-only access (read_items) to only the vaults plugins may use; its vault grants are the whole scope.",
+   "category": "Development Tools",
+   "keywords": [
+    "Development Tools"
+   ],
+   "path": "plugins/1password",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://1password.com",
+   "dependencies": [],
+   "mcpServers": [],
+   "secretProvider": {
+    "kind": "1password",
+    "token": "OP_SERVICE_ACCOUNT_TOKEN"
+   },
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 321,
+    "sha256": "b7adb6642700d2ae951a1faee66d46e90265f249a89e47972296fa1cae25177d"
+   },
+   "fileCount": 2,
+   "bytes": 1085,
+   "contentHash": "sha256:d506f372b5cb3907b4f73ec798eee5ed0c6368a22ff159668391f34b06b54ec9",
+   "bundle": "catalog/bundles/1password.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/1password"
+   ]
+  },
+  {
    "name": "activecampaign",
    "displayName": "ActiveCampaign",
    "description": "Marketing automation and CRM: manage contacts, lists, tags, and custom fields, plan and report on email campaigns, build automations, and operate deal pipelines through natural language",

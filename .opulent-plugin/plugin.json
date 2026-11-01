@@ -6,6 +6,7 @@
   "repository": "https://github.com/OpulentiaAI/opulent-marketplace",
   "skills": [],
   "optionalPlugins": [
+    "./plugins/1password",
     "./plugins/activecampaign",
     "./plugins/airtable",
     "./plugins/aiven",
