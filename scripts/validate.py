@@ -35,7 +35,7 @@ CATALOG_SCHEMA = 1
 LEGACY_REPOSITORY = "github.com/cognitionai/devin-marketplace"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 NAME_RE = re.compile(r"^[a-z0-9]+([.-][a-z0-9]+)*$")
-URL_RE = re.compile(r"^https://[^\s/]+/[^\s]+\.git$")
+URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}\.git$")
 LOCAL_RE = re.compile(r"^\./plugins/([a-z0-9]+([.-][a-z0-9]+)*)$")
 PLACEHOLDER_RE = re.compile(r"\$\{([^}]*)\}")
 CREDENTIAL_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -84,7 +84,7 @@ def check_upstream(where: str, plugin: dict, errors: list[str]) -> None:
         errors.append(f"{where}: source must be 'url' or 'git-subdir'")
     url = plugin.get("url")
     if not isinstance(url, str) or not URL_RE.match(url):
-        errors.append(f"{where}: url must be an https git URL ending in .git")
+        errors.append(f"{where}: url must be a GitHub repository URL ending in .git; Opulent reads upstream plugins from GitHub")
     sha = plugin.get("sha")
     if not isinstance(sha, str) or not SHA_RE.match(sha):
         errors.append(f"{where}: sha must be a full 40-character lowercase commit sha")
@@ -455,6 +455,8 @@ def main() -> int:
             listing = fetch_upstream(plugin)
             if listing is None:
                 errors.append(f"{plugin['url']}: sha {plugin['sha']} not found upstream")
+            elif len(listing["name"]) > 64 or not NAME_RE.match(listing["name"]):
+                errors.append(f"{plugin['url']}: upstream plugin name '{listing['name']}' is not a lowercase slug Opulent accepts")
             else:
                 fetched[identity(plugin)] = listing
 
