@@ -15,12 +15,16 @@
 #   ENTIRE_OIDC_CLIENT_ID      OAuth client presented on the exchange (default entire-cli, Entire's public client)
 #   ENTIRE_API_URL             control plane that --check calls (default https://us.console.entire.io)
 #   ENTIRE_OIDC_LIFETIME       CI token lifetime in seconds, Buildkite only (default 300)
+#   ENTIRE_OIDC_ALLOW_LOOPBACK_HTTP  tests only: set to 1 to allow http://127.0.0.1 endpoints
 set -euo pipefail
+{ set +x; } 2>/dev/null
 
 provider="" check=0
 while [ $# -gt 0 ]; do
   case "$1" in
-    --provider) provider="${2:-}"; shift 2 ;;
+    --provider)
+      [ $# -ge 2 ] || { echo "mint-entire-session: --provider needs buildkite or depot" >&2; exit 64; }
+      provider="$2"; shift 2 ;;
     --check) check=1; shift ;;
     --) shift; break ;;
     *) echo "mint-entire-session: unknown argument: $1" >&2; exit 64 ;;
@@ -52,11 +56,12 @@ if ! [[ "$client_id" =~ ^[A-Za-z0-9._-]{1,128}$ ]] || ! [[ "$lifetime" =~ ^[0-9]
   echo "mint-entire-session: ENTIRE_OIDC_CLIENT_ID, ENTIRE_OIDC_LIFETIME or ENTIRE_OIDC_AUDIENCE is malformed" >&2
   exit 64
 fi
+plain_url() {
+  [[ "$1" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?(/[A-Za-z0-9._~/-]*)?$ ]] && return 0
+  [ "${ENTIRE_OIDC_ALLOW_LOOPBACK_HTTP:-}" = 1 ] && [[ "$1" =~ ^http://127\.0\.0\.1:[0-9]{1,5}(/[A-Za-z0-9._~/-]*)?$ ]]
+}
 for url in "$token_url" "$api_url"; do
-  if [[ "$url" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?(/[A-Za-z0-9._~/-]*)?$ ]]; then continue; fi
-  if [ "${ENTIRE_OIDC_ALLOW_LOOPBACK_HTTP:-}" = 1 ] && [[ "$url" =~ ^http://127\.0\.0\.1:[0-9]{1,5}(/[A-Za-z0-9._~/-]*)?$ ]]; then continue; fi
-  echo "mint-entire-session: $url is not a plain https URL" >&2
-  exit 64
+  plain_url "$url" || { echo "mint-entire-session: $url is not a plain https URL" >&2; exit 64; }
 done
 
 jwt_shaped() { [[ "$1" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$ ]]; }
@@ -72,6 +77,12 @@ case "$provider" in
   depot)
     if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
       echo "mint-entire-session: the job has no OIDC request credentials; add 'id-token: write' to its permissions" >&2
+      exit 69
+    fi
+    request_url="${ACTIONS_ID_TOKEN_REQUEST_URL%%\?*}" request_query=""
+    case "$ACTIONS_ID_TOKEN_REQUEST_URL" in *\?*) request_query="${ACTIONS_ID_TOKEN_REQUEST_URL#*\?}" ;; esac
+    if ! plain_url "$request_url" || ! [[ "$request_query" =~ ^[A-Za-z0-9._~%=\&+-]*$ ]] || ! [[ "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" =~ ^[A-Za-z0-9._~+/=-]+$ ]]; then
+      echo "mint-entire-session: the job's OIDC request credentials are malformed" >&2
       exit 69
     fi
     separator='?'
