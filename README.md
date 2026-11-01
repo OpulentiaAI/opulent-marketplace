@@ -15,7 +15,7 @@ You can also reference a plugin from your own plugin manifest, pinned to a commi
   "requiredPlugins": [
     {
       "source": "git-subdir",
-      "url": "https://github.com/OpulentiaAI/devin-marketplace.git",
+      "url": "https://github.com/OpulentiaAI/opulent-marketplace.git",
       "path": "plugins/notion",
       "sha": "<commit>"
     }
