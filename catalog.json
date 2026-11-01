@@ -5818,7 +5818,7 @@
   {
    "name": "tailscale",
    "displayName": "Tailscale",
-   "description": "Manage a Tailscale tailnet through the Tailscale v2 admin API: devices, ACL policy, DNS, auth keys, users, invites, webhooks, posture and audit logs. Runs the open-source @yawlabs/tailscale-mcp server with a Tailscale API access token; Tailscale has no official admin-API MCP server. Optionally set TAILSCALE_TAILNET (defaults to the token's own tailnet) and TAILSCALE_READONLY=1 to drop every write tool.",
+   "description": "Manage a Tailscale tailnet through the Tailscale v2 admin API: devices, ACL policy, DNS, auth keys, users, invites, webhooks, posture and audit logs. Runs the open-source @yawlabs/tailscale-mcp server with a Tailscale API access token; Tailscale has no official admin-API MCP server. It is read-only unless you opt in: TAILSCALE_READONLY is saved as 1 when left blank, and saving it as 0 allows write tools. Optionally set TAILSCALE_TAILNET (defaults to the token's own tailnet).",
    "category": "Cloud & Infrastructure",
    "keywords": [
     "Cloud & Infrastructure"
@@ -5837,8 +5837,8 @@
     "sha256": "e68b7d6b6970dc0b9c33d2420885c002bd888c1c8b29002978390a4c67508e7a"
    },
    "fileCount": 2,
-   "bytes": 2016,
-   "contentHash": "sha256:0abb02336ad81d35575dc513f6347ba64e9fa425c0c9fd77b2c68403b30cd8e6",
+   "bytes": 2091,
+   "contentHash": "sha256:b0342230944b35ebcd9703f8f824e609e93da76c00bfc79e58009dc4ce0a8385",
    "bundle": "catalog/bundles/tailscale.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/tailscale"

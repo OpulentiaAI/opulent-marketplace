@@ -40,6 +40,8 @@ LOCAL_RE = re.compile(r"^\./plugins/([a-z0-9]+([.-][a-z0-9]+)*)$")
 PLACEHOLDER_RE = re.compile(r"\$\{([^}]*)\}")
 CREDENTIAL_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 RUNTIME_PLACEHOLDERS = {"CLAUDE_PLUGIN_ROOT", "PLUGIN_ROOT"}
+# A stdio env value is one saved credential: ${NAME}, optional ${NAME:-}, or ${NAME:-value}, whose plain default is saved when left blank.
+ENV_VALUE_RE = re.compile(r"^\$\{(?:env:)?[A-Za-z_][A-Za-z0-9_]*(?::-[A-Za-z0-9._-]{0,64})?\}$")
 LOGO_RE = re.compile(r"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*\.(svg|png|jpg|jpeg|webp)$")
 LOGO_TYPES = {".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
 RASTER_RE = re.compile(r"\.(png|jpe?g|gif|webp|ico)$", re.IGNORECASE)
@@ -133,6 +135,9 @@ def check_placeholders(where: str, value: str, errors: list[str]) -> None:
 def check_env_placeholders(where: str, env: dict[str, object], errors: list[str]) -> None:
     for key, value in env.items():
         if not isinstance(value, str):
+            continue
+        if not ENV_VALUE_RE.match(value):
+            errors.append(f"{where}: env {key} must be ${{{key}}}, ${{{key}:-}} when optional, or ${{{key}:-value}} for a default of at most 64 letters, digits, '.', '_' or '-'")
             continue
         for reference in PLACEHOLDER_RE.findall(value):
             name = placeholder_name(reference)
