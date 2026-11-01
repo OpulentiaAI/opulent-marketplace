@@ -16,7 +16,10 @@
       ],
       "env": {
         "PRIVATE_APP_ACCESS_TOKEN": "${PRIVATE_APP_ACCESS_TOKEN}"
-      }
+      },
+      "allowedHosts": [
+        "api.hubspot.com"
+      ]
     }
   }
 }

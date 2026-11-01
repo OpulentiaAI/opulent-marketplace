@@ -18,7 +18,10 @@
         "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
         "SLACK_TEAM_ID": "${SLACK_TEAM_ID}",
         "SLACK_CHANNEL_IDS": "${SLACK_CHANNEL_IDS}"
-      }
+      },
+      "allowedHosts": [
+        "slack.com"
+      ]
     }
   }
 }

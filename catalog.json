@@ -465,8 +465,8 @@
     "sha256": "5b4d8371d79a5c0d3a27ea4e929f772e68d47f7d267496bf9211d5f60fcf8084"
    },
    "fileCount": 2,
-   "bytes": 5118,
-   "contentHash": "sha256:a878e35c6620ab5e8b9dfa9eca6dd829ae0fca8117621b5d988e28be368c941b",
+   "bytes": 5187,
+   "contentHash": "sha256:f25fd64e8dcff956c3c10793b601b4bacfa0bfc1ddba8d2f53840a956df909a2",
    "bundle": "catalog/bundles/aws-agent-toolkit.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/aws-agent-toolkit"
@@ -2391,8 +2391,8 @@
     "sha256": "3b77085d30c6d804d7b673c79c337d60c37508bdcf3845222bfe9d1bb959dfe7"
    },
    "fileCount": 33,
-   "bytes": 107752,
-   "contentHash": "sha256:ed72315f1d89854c5967857567360105463da9618d6e2de3f3a0a169979657d5",
+   "bytes": 107813,
+   "contentHash": "sha256:36c0a5ad00cb8bfb3b1d208615c5cc3bc4797069892e0fece0d69b1dcf549b96",
    "bundle": "catalog/bundles/firecrawl.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/firecrawl"
@@ -2712,8 +2712,8 @@
     "sha256": "5cfe4b3da60baba88521cc21aff1bc3abfd018f913c60097c339e81e637c3030"
    },
    "fileCount": 2,
-   "bytes": 3018,
-   "contentHash": "sha256:e487259ea417b4d6d9805315d086980636af3ec3d994cbb50e24bcf0d0590e71",
+   "bytes": 3075,
+   "contentHash": "sha256:d78b6c5eb004a738e03dd8fec0c4546553aa1d3d939f4e4e36ffec4d8dfce161",
    "bundle": "catalog/bundles/google-maps.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/google-maps"
@@ -2945,8 +2945,8 @@
     "sha256": "f96cfb6bba27c8e70a03e782f07d4d649e9f39d2fb8bea7136b370ab2c3f04a9"
    },
    "fileCount": 2,
-   "bytes": 1252,
-   "contentHash": "sha256:f6763dba35230cf6c5e334ea400944589bc3e2ad2bc4a97a214fafc779fb648f",
+   "bytes": 1311,
+   "contentHash": "sha256:b8f9febbd8374b9f3ac8f29b8a3dbb81e815899510151f3d2bc67b3473ce9273",
    "bundle": "catalog/bundles/hubspot.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/hubspot"
@@ -4260,8 +4260,8 @@
     "sha256": "728e614f2d3a6587bbdd3f66232ef1a75dbc438d3af12d43ca20dee93bbe7758"
    },
    "fileCount": 2,
-   "bytes": 1401,
-   "contentHash": "sha256:7040c74317e9de0319892c86b5f802a0431c212f78d635868df28d38710c9ed1",
+   "bytes": 1517,
+   "contentHash": "sha256:d9bbe95160e542f3f49f22697c264e21fbb26ffb4238dbf753d06bb73058e732",
    "bundle": "catalog/bundles/netlify.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/netlify"
@@ -5139,8 +5139,8 @@
     "sha256": "85941864bd1cfe3f6aef23e9234852bd385ab4dcc88b829bc0b9ab891e32a6a9"
    },
    "fileCount": 2,
-   "bytes": 2226,
-   "contentHash": "sha256:a3c636dba3b7a8bd3979bcd688be09074ccfc4c5de5099654e50dc62ea4d804c",
+   "bytes": 2283,
+   "contentHash": "sha256:9c2b31e73f4995c7bae58f80bf3a8571d15cab8c6cc23530536352640ee8343e",
    "bundle": "catalog/bundles/ref-tools.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/ref-tools"
@@ -5168,8 +5168,8 @@
     "sha256": "e59687194f210fc30319202cc66185e83a0bd8962c0d60ab4257bb10b07050d8"
    },
    "fileCount": 2,
-   "bytes": 739,
-   "contentHash": "sha256:b6670c98e577f35f373845f549cbb1695e66233a84f13c11d0d28e3215643459",
+   "bytes": 800,
+   "contentHash": "sha256:bdf3ebb4256ff9c7fb02889d7e14b81bdb304aad9529a0d1f6181b61a571d9b2",
    "bundle": "catalog/bundles/replicate.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/replicate"
@@ -5372,8 +5372,8 @@
     "sha256": "5ff275ef6df5aca7ac8ed3cf95d003015b4b153f99c570bdcaf9d1674bd6aa5c"
    },
    "fileCount": 2,
-   "bytes": 1883,
-   "contentHash": "sha256:a18cbef041f1bedcc239d456d29d358070288015da200157c39024b37ddd0b96",
+   "bytes": 1936,
+   "contentHash": "sha256:390489b9c277a746903a157787f99fc1e729aaead2aa6b3511ed38d1188c86ec",
    "bundle": "catalog/bundles/slack.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/slack"
@@ -5634,8 +5634,8 @@
     "sha256": "bb8d502577de5e864437542bc2655b5d4d4782589386fc4583d912f46ac73181"
    },
    "fileCount": 2,
-   "bytes": 1783,
-   "contentHash": "sha256:4cfddef5748b51e14c26f3e650ed7fc26d80564b99d94ebb17454ea0402a44df",
+   "bytes": 1911,
+   "contentHash": "sha256:5066f6866ae3697d4c73b0123045ec8389f24e55020450192fb29db1f044f813",
    "bundle": "catalog/bundles/supabase.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/supabase"

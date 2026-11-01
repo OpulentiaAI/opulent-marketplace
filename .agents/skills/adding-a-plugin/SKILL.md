@@ -29,6 +29,15 @@ must not have both.
      server is installed and started on the Opulent machine of each run that
      uses the plugin, so its command must run on a stock Linux machine (`npx`,
      `uvx` or a binary the command itself fetches).
+     Opulent machines block network access a server hasn't declared. List
+     the API hosts a stdio server calls in `allowedHosts` (lowercase public
+     hostnames, at most 16, `[]` when it needs no network). The package
+     registry for `npx`/`uvx` and https hosts in `args` are added for you,
+     and the review sheet shows the full list. A server that names no hosts
+     and isn't `[]` is refused, and so is one whose hosts depend on a URL
+     the user supplies. Pin the package version (`pkg@1.2.3`). An unpinned
+     or `@latest` package installs, but the review sheet warns that it runs
+     whatever version is published.
    * Never check in a credential. Anything a user supplies is a plain
      `${<NAME>}` placeholder, resolved from the credentials saved on the
      user's installation (no `MCP_` prefix). When a user installs the plugin,

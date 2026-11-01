@@ -17,7 +17,10 @@
       ],
       "env": {
         "REF_API_KEY": "${REF_API_KEY}"
-      }
+      },
+      "allowedHosts": [
+        "api.ref.tools"
+      ]
     }
   }
 }

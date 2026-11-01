@@ -17,7 +17,10 @@
       ],
       "env": {
         "REPLICATE_API_TOKEN": "${REPLICATE_API_TOKEN}"
-      }
+      },
+      "allowedHosts": [
+        "api.replicate.com"
+      ]
     }
   }
 }

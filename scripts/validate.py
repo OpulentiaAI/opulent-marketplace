@@ -57,7 +57,10 @@ PLUGIN_KEYS = {
     "dependencies",
     "mcpServers",
 }
-STDIO_KEYS = {"command", "args", "env"}
+STDIO_KEYS = {"command", "args", "env", "allowedHosts"}
+HOST_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$")
+PRIVATE_SUFFIXES = (".local", ".internal", ".localhost")
+MAX_ALLOWED_HOSTS = 16
 HTTP_KEYS = {"url", "headers", "transport", "oauthClientId", "oauthScopes"}
 
 
@@ -155,6 +158,13 @@ def check_server(where: str, slug: str, config: object, errors: list[str]) -> No
         if not isinstance(env, dict):
             errors.append(f"{where}: server '{slug}' env must be an object")
             return
+        hosts = config.get("allowedHosts", [])
+        if (
+            not isinstance(hosts, list)
+            or len(hosts) > MAX_ALLOWED_HOSTS
+            or any(not isinstance(host, str) or not HOST_RE.match(host) or host.endswith(PRIVATE_SUFFIXES) for host in hosts)
+        ):
+            errors.append(f"{where}: server '{slug}' allowedHosts must list at most {MAX_ALLOWED_HOSTS} lowercase public hostnames")
         strings = [config["command"], *args, *env.values()]
         check_env_placeholders(f"{where} ({slug})", env, errors)
     else:

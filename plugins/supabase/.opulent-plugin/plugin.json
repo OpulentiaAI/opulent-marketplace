@@ -18,7 +18,12 @@
       ],
       "env": {
         "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
-      }
+      },
+      "allowedHosts": [
+        "api.supabase.com",
+        "supabase.com",
+        "xguihxuzqibwxjnimxev.supabase.co"
+      ]
     }
   }
 }
