@@ -15,7 +15,7 @@ Files:
 - scripts/mint-entire-session.sh does the exchange. It never prints the tokens, never writes them to disk and
   never puts them on a command line: curl reads each credential from stdin. Only the command after "--" receives
   the session. When the agent supports buildkite-agent redactor add, the session is also added to the job log
-  redactor. The same script serves Depot CI jobs (--provider depot), and the Depot plugin ships it unchanged.
+  redactor. The same script also serves Depot CI jobs (--provider depot).
 - templates/pipeline.yml is a step to copy into a pipeline.
 
 ## One-time setup (an Entire org admin of opulent-managed)

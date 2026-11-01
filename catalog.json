@@ -959,8 +959,8 @@
     "sha256": "32d45e2a770e5198bd0b12da30a43c3f560a54dd182a970fb32949e91f807a3f"
    },
    "fileCount": 6,
-   "bytes": 15913,
-   "contentHash": "sha256:a4de68120eb9878cb8f3fce7878e185b6cf99692cf3ba7896f25a09629197c2a",
+   "bytes": 15877,
+   "contentHash": "sha256:9b1d823e790ef7e4a80391c2a37e046cfeba92597f98809f03cd5480b8f6a089",
    "bundle": "catalog/bundles/buildkite.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/buildkite"
