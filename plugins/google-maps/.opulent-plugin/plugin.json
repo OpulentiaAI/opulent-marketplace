@@ -1,0 +1,25 @@
+{
+  "name": "google-maps",
+  "displayName": "Google Maps",
+  "description": "Access Google Maps feature using natural‑language queries: geocode and reverse‑geocode addresses, search places, fetch place details, calculate distances and directions, and retrieve elevation data.",
+  "homepage": "https://maps.google.com",
+  "logo": "logo.svg",
+  "keywords": [
+    "Productivity"
+  ],
+  "mcpServers": {
+    "google-maps": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-google-maps"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "${GOOGLE_MAPS_API_KEY}"
+      },
+      "allowedHosts": [
+        "maps.googleapis.com"
+      ]
+    }
+  }
+}
