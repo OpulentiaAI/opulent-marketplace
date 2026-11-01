@@ -57,7 +57,7 @@ PLUGIN_KEYS = {
     "dependencies",
     "mcpServers",
 }
-STDIO_KEYS = {"command", "args", "env", "allowedHosts"}
+STDIO_KEYS = {"command", "args", "env", "allowedHosts", "oauthEnvironment"}
 HOST_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$")
 PRIVATE_SUFFIXES = (".local", ".internal", ".localhost")
 MAX_ALLOWED_HOSTS = 16
@@ -165,6 +165,11 @@ def check_server(where: str, slug: str, config: object, errors: list[str]) -> No
             or any(not isinstance(host, str) or not HOST_RE.match(host) or host.endswith(PRIVATE_SUFFIXES) for host in hosts)
         ):
             errors.append(f"{where}: server '{slug}' allowedHosts must list at most {MAX_ALLOWED_HOSTS} lowercase public hostnames")
+        oauth_environment = config.get("oauthEnvironment")
+        if oauth_environment is not None and (
+            not isinstance(oauth_environment, str) or not CREDENTIAL_NAME_RE.match(oauth_environment) or oauth_environment in env
+        ):
+            errors.append(f"{where}: server '{slug}' oauthEnvironment must name the one env variable the OAuth access token fills, outside env")
         strings = [config["command"], *args, *env.values()]
         check_env_placeholders(f"{where} ({slug})", env, errors)
     else:

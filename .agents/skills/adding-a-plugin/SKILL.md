@@ -46,6 +46,11 @@ must not have both.
      (`"AWS_PROFILE": "${AWS_PROFILE}"`) because a saved credential replaces the
      env entry with the same key. In `args` and `headers` the placeholder is the
      credential's only name. `${PLUGIN_ROOT}` is the installed plugin directory.
+   * A server can instead run a bridge Opulent's machine image ships. Today that is
+     only `opulent-paper-mcp`, which reaches the headless Paper Desktop on desktop
+     machines. It takes no `env` credentials. `oauthEnvironment` names the variable
+     the owner's OAuth access token fills (`PAPER_MCP_TOKEN`), so installing it
+     goes straight into that provider's sign-in.
    * `dependencies` (optional) lists the slugs of other plugins authored here
      that must be installed with this one.
 2. Add `"./plugins/<slug>"` to `optionalPlugins` in `.opulent-plugin/plugin.json`.

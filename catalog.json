@@ -4444,6 +4444,35 @@
    ]
   },
   {
+   "name": "paper",
+   "displayName": "Paper",
+   "description": "Read and write Paper design files: create files and artboards, write HTML and CSS onto the canvas, read structure, styles and screenshots, manage tokens, and export images. Opulent desktop machines run Paper Desktop headless, and the agent reaches it through Opulent's Paper bridge after you sign in to Paper.",
+   "category": "Design & Creative",
+   "keywords": [
+    "Design & Creative"
+   ],
+   "path": "plugins/paper",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://paper.design",
+   "dependencies": [],
+   "mcpServers": [
+    "paper"
+   ],
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 168,
+    "sha256": "d151abdd9f94d51157a6518bf67df0a5c62af4a6c66df4f00731cc38f782ff1d"
+   },
+   "fileCount": 2,
+   "bytes": 930,
+   "contentHash": "sha256:b575c3aa63ad6490dce0328add4f17cc9d3477467d02c1eecf7fb7b36c0f242c",
+   "bundle": "catalog/bundles/paper.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/paper"
+   ]
+  },
+  {
    "name": "parallel",
    "displayName": "Parallel",
    "description": "AI-powered web search and research capabilities through Parallel's MCP server",
@@ -5205,6 +5234,35 @@
    ]
   },
   {
+   "name": "revyl",
+   "displayName": "Revyl",
+   "description": "Run and verify your app on Revyl cloud devices and browsers from the agent: check setup, start and stop iOS, Android and web sessions, drive the device, and capture screenshots and evidence. Runs Revyl's official CLI MCP server (revyl mcp serve, dev profile) with a Revyl API key from Settings → API Keys. Live device sessions also reach the per-session worker and storage hosts that Revyl's control plane returns, which a run must be granted separately.",
+   "category": "Development Tools",
+   "keywords": [
+    "Development Tools"
+   ],
+   "path": "plugins/revyl",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://revyl.com",
+   "dependencies": [],
+   "mcpServers": [
+    "revyl"
+   ],
+   "logo": {
+    "path": "logo.png",
+    "mediaType": "image/png",
+    "bytes": 12658,
+    "sha256": "443eb196be02903aed25df0ce246296bc16ebe65f218e11d5bbdeadeab898cf5"
+   },
+   "fileCount": 2,
+   "bytes": 13689,
+   "contentHash": "sha256:353f0942b47a20b90f6af562b3790441a2a6bcdebcfbc1eec4cea6026d84cbfd",
+   "bundle": "catalog/bundles/revyl.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/revyl"
+   ]
+  },
+  {
    "name": "rootly",
    "displayName": "Rootly",
    "description": "Rootly integration to investigate and manage incidents, alerts, on-call schedules, and retrospectives",
@@ -5755,6 +5813,35 @@
    "bundle": "catalog/bundles/synthflow-docs.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/synthflow-docs"
+   ]
+  },
+  {
+   "name": "tailscale",
+   "displayName": "Tailscale",
+   "description": "Manage a Tailscale tailnet through the Tailscale v2 admin API: devices, ACL policy, DNS, auth keys, users, invites, webhooks, posture and audit logs. Runs the open-source @yawlabs/tailscale-mcp server with a Tailscale API access token; Tailscale has no official admin-API MCP server. Optionally set TAILSCALE_TAILNET (defaults to the token's own tailnet) and TAILSCALE_READONLY=1 to drop every write tool.",
+   "category": "Cloud & Infrastructure",
+   "keywords": [
+    "Cloud & Infrastructure"
+   ],
+   "path": "plugins/tailscale",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://tailscale.com",
+   "dependencies": [],
+   "mcpServers": [
+    "tailscale"
+   ],
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 964,
+    "sha256": "e68b7d6b6970dc0b9c33d2420885c002bd888c1c8b29002978390a4c67508e7a"
+   },
+   "fileCount": 2,
+   "bytes": 2016,
+   "contentHash": "sha256:0abb02336ad81d35575dc513f6347ba64e9fa425c0c9fd77b2c68403b30cd8e6",
+   "bundle": "catalog/bundles/tailscale.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/tailscale"
    ]
   },
   {

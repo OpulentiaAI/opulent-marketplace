@@ -1,0 +1,21 @@
+{
+  "name": "paper",
+  "displayName": "Paper",
+  "description": "Read and write Paper design files: create files and artboards, write HTML and CSS onto the canvas, read structure, styles and screenshots, manage tokens, and export images. Opulent desktop machines run Paper Desktop headless, and the agent reaches it through Opulent's Paper bridge after you sign in to Paper.",
+  "homepage": "https://paper.design",
+  "repository": "https://github.com/paper-design/agent-plugins",
+  "logo": "logo.svg",
+  "keywords": [
+    "Design & Creative"
+  ],
+  "mcpServers": {
+    "paper": {
+      "command": "opulent-paper-mcp",
+      "oauthEnvironment": "PAPER_MCP_TOKEN",
+      "allowedHosts": [
+        "api.paper.design",
+        "app.paper.design"
+      ]
+    }
+  }
+}

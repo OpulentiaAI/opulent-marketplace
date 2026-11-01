@@ -1,0 +1,28 @@
+{
+  "name": "tailscale",
+  "displayName": "Tailscale",
+  "description": "Manage a Tailscale tailnet through the Tailscale v2 admin API: devices, ACL policy, DNS, auth keys, users, invites, webhooks, posture and audit logs. Runs the open-source @yawlabs/tailscale-mcp server with a Tailscale API access token; Tailscale has no official admin-API MCP server. Optionally set TAILSCALE_TAILNET (defaults to the token's own tailnet) and TAILSCALE_READONLY=1 to drop every write tool.",
+  "homepage": "https://tailscale.com",
+  "repository": "https://github.com/YawLabs/tailscale-mcp",
+  "logo": "logo.svg",
+  "keywords": [
+    "Cloud & Infrastructure"
+  ],
+  "mcpServers": {
+    "tailscale": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@yawlabs/tailscale-mcp@0.23.1"
+      ],
+      "env": {
+        "TAILSCALE_API_KEY": "${TAILSCALE_API_KEY}",
+        "TAILSCALE_READONLY": "${TAILSCALE_READONLY:-}",
+        "TAILSCALE_TAILNET": "${TAILSCALE_TAILNET:-}"
+      },
+      "allowedHosts": [
+        "api.tailscale.com"
+      ]
+    }
+  }
+}
