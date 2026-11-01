@@ -1,0 +1,23 @@
+{
+  "name": "magicpath",
+  "displayName": "MagicPath",
+  "description": "Search, inspect, install, export, create and edit MagicPath UI components from the agent. Runs Opulent's MagicPath bridge over the magicpath-ai 2.6.1 CLI, which Opulent machine images install pinned and integrity-checked, with your MagicPath CLI session: after `npx magicpath-ai login`, ~/.magicpath/session.json holds accessToken (save it as MAGICPATH_TOKEN) and refreshToken (MAGICPATH_REFRESH_TOKEN). When the access token expires or MagicPath rejects it, the bridge renews with the refresh token, so it keeps working until you sign out. Connecting proves the session with a real authenticated call. Tools: magicpath_info, magicpath_search, magicpath_inspect, magicpath_list_projects, magicpath_list_components and magicpath_code_status read; magicpath_add and magicpath_code_export write files only in the workspace; magicpath_code_start and magicpath_code_submit create or change components on your MagicPath canvas.",
+  "homepage": "https://www.magicpath.ai",
+  "repository": "https://github.com/MagicPathAI/agent-skills",
+  "logo": "logo.png",
+  "keywords": [
+    "Design & Creative"
+  ],
+  "mcpServers": {
+    "magicpath": {
+      "command": "opulent-magicpath-mcp",
+      "env": {
+        "MAGICPATH_TOKEN": "${MAGICPATH_TOKEN}",
+        "MAGICPATH_REFRESH_TOKEN": "${MAGICPATH_REFRESH_TOKEN}"
+      },
+      "allowedHosts": [
+        "api.magicpath.ai"
+      ]
+    }
+  }
+}
