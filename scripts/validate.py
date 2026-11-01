@@ -136,7 +136,7 @@ def check_env_placeholders(where: str, env: dict[str, object], errors: list[str]
     for key, value in env.items():
         if not isinstance(value, str):
             continue
-        if not ENV_VALUE_RE.match(value):
+        if not ENV_VALUE_RE.fullmatch(value):
             errors.append(f"{where}: env {key} must be ${{{key}}}, ${{{key}:-}} when optional, or ${{{key}:-value}} for a default of at most 64 letters, digits, '.', '_' or '-'")
             continue
         for reference in PLACEHOLDER_RE.findall(value):
