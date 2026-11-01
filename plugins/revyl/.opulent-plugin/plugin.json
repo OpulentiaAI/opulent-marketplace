@@ -1,0 +1,31 @@
+{
+  "name": "revyl",
+  "displayName": "Revyl",
+  "description": "Run and verify your app on Revyl cloud devices and browsers from the agent: check setup, start and stop iOS, Android and web sessions, drive the device, and capture screenshots and evidence. Runs Revyl's official CLI MCP server (revyl mcp serve, dev profile) with a Revyl API key from Settings → API Keys. Live device sessions also reach the per-session worker and storage hosts that Revyl's control plane returns, which a run must be granted separately.",
+  "homepage": "https://revyl.com",
+  "repository": "https://github.com/RevylAI/revyl-cli",
+  "logo": "logo.png",
+  "keywords": [
+    "Development Tools"
+  ],
+  "mcpServers": {
+    "revyl": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "revyl==0.1.204",
+        "revyl",
+        "mcp",
+        "serve",
+        "--profile",
+        "dev"
+      ],
+      "env": {
+        "REVYL_API_KEY": "${REVYL_API_KEY}"
+      },
+      "allowedHosts": [
+        "backend.revyl.ai"
+      ]
+    }
+  }
+}
