@@ -1,0 +1,23 @@
+# Mint a short-lived Entire session for the opulent-managed-broker service account through Depot CI OIDC.
+# Copy scripts/mint-entire-session.sh into the repository and this file to .depot/workflows/.
+# The service account's OIDC binding must admit this repository (see the entire-oidc-session skill).
+name: Entire session
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  entire-session:
+    runs-on: depot-ubuntu-latest
+    env:
+      ENTIRE_SERVICE_ACCOUNT_ID: svc_01M6CJT6RC0J6TPA9CFPYYR4DR
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mint and check an Entire session
+        run: ./scripts/mint-entire-session.sh --provider depot --check
+      # Run a command as the service account. ENTIRE_TOKEN reaches only this command:
+      # - run: ./scripts/mint-entire-session.sh --provider depot -- entire auth status
