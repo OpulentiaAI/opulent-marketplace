@@ -8,7 +8,9 @@
 // refused or missing one, and that the token travels only as a bearer header, never in argv.
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
+import { join } from "node:path";
 import http2 from "node:http2";
 import { after, before, test } from "node:test";
 
@@ -39,7 +41,7 @@ after(() => server?.close());
 
 function runCheck(token) {
   seen = [];
-  const env = { PATH: process.env.PATH, HOME: process.env.HOME ?? "/tmp", DEPOT_API_URL: url, DEPOT_ERROR_TELEMETRY: "0", DEPOT_DISABLE_OTEL: "1", ...(token === null ? {} : { DEPOT_TOKEN: token }) };
+  const env = { PATH: process.env.PATH, HOME: mkdtempSync(join(tmpdir(), "depot-home-")), npm_config_cache: process.env.npm_config_cache ?? join(homedir(), ".npm"), DEPOT_API_URL: url, ...(token === null ? {} : { DEPOT_TOKEN: token }) };
   return new Promise((resolve) => {
     const child = spawn(check.command, check.args, { env, stdio: ["ignore", "ignore", "pipe"] });
     let stderr = "";

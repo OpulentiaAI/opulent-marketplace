@@ -16,7 +16,7 @@ jobs:
     env:
       ENTIRE_SERVICE_ACCOUNT_ID: svc_01M6CJT6RC0J6TPA9CFPYYR4DR
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Mint and check an Entire session
         run: ./scripts/mint-entire-session.sh --provider depot --check
       # Run a command as the service account. ENTIRE_TOKEN reaches only this command:

@@ -17,7 +17,8 @@ Below, "depot" means that command line.
 
 ## Find the run
 
-- depot ci run list lists recent runs. depot ci status <run-id> --output json shows a run's workflows, jobs and
+- depot ci run list shows only queued and running runs by default. For a failure, use
+  depot ci run list --status failed -n 20 --output json, adding --repo <owner/repo> to narrow it. depot ci status <run-id> --output json shows a run's workflows, jobs and
   attempts.
 - When the token belongs to more than one organization, add --org <org-id> (depot org list shows them).
 - Entire repositories are named <namespace>/<owner>/<name>: et/ for a repository hosted on Entire, gh/ for a GitHub

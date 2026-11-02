@@ -2177,8 +2177,8 @@
     "sha256": "9afe05e7828f67292cf31e8e66d67d8b255d283485096874c7a3a5a2fdb52824"
    },
    "fileCount": 7,
-   "bytes": 19125,
-   "contentHash": "sha256:55dcffa5db58f93c148dddba72ea0170f8059513b84500d520b9ae4d96db265c",
+   "bytes": 19374,
+   "contentHash": "sha256:cdbfa3d7f12b43009b61d53a861e1ac4c9bd30e640e2508b6fa81f5f333500af",
    "bundle": "catalog/bundles/depot.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/depot"

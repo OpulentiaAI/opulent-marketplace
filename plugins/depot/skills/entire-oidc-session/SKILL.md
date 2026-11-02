@@ -30,9 +30,9 @@ grant on only what that workflow needs.
    names you can pin.
 2. Bind the repository. Depot CI tokens for Entire runs carry
    sub = spiffe://identity.depot.dev/org/<depot-org-id>/ci/entire/<namespace>/<owner>/<repo>/ref/<ref>/sandbox/<id>
-   plus flat claims such as org_id, repository (the full et/... name) and ref. Pin at least the Depot organization
-   and the repository, and never the sandbox id, which changes on every job. Put the body in a file:
-   {"providerId": "<provider id>", "attributeFilter": {"org_id": "<depot-org-id>", "repository": "et/opulent-managed/<repo>"}}
+   plus flat claims such as org_id, repository (the full et/... name) and ref. Pin the Depot organization, the
+   repository and the ref (the full refs/heads/... name), and never the sandbox id, which changes on every job. Put the body in a file:
+   {"providerId": "<provider id>", "attributeFilter": {"org_id": "<depot-org-id>", "repository": "et/opulent-managed/<repo>", "ref": "refs/heads/main"}}
    entire api -X POST /api/v1/service-accounts/svc_01M6CJT6RC0J6TPA9CFPYYR4DR/bindings --input binding.json
    Use the attribute names the provider listing shows if they differ from Depot's claim names above.
 3. Grant the least role that works, on one project or repository:
