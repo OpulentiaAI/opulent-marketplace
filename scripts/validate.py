@@ -58,7 +58,25 @@ PLUGIN_KEYS = {
     "keywords",
     "dependencies",
     "mcpServers",
+    "secrets",
+    "connectionCheck",
+    "secretProvider",
 }
+SECRET_NAME_RE = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+REFUSED_SECRET_NAMES = {"PATH", "HOME", "USER", "SHELL", "PWD", "TMPDIR", "NODE_OPTIONS", "PYTHONPATH", "BASH_ENV", "ENV", "OP_SERVICE_ACCOUNT_TOKEN"}
+REFUSED_SECRET_PREFIXES = ("LD_", "OPULENT_", "CONVEX_", "RUNTIME_")
+MAX_SECRETS = 16
+SECRET_KEYS = {"description", "optional"}
+CHECK_KEYS = {"command", "args", "allowedHosts", "timeoutSeconds"}
+CHECK_COMMANDS = {"npx", "uvx"}
+MAX_CHECK_ARGS = 32
+MAX_CHECK_ARG_CHARS = 512
+# The check's package is its first non-flag argument: npm name@1.2.3 for npx, name==1.2.3 or name@1.2.3 for uvx.
+NPX_PINNED_RE = re.compile(r"^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*@\d+\.\d+\.\d+([-+][0-9A-Za-z.-]+)?$")
+UVX_PINNED_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*(\[[A-Za-z0-9,._-]+\])?(==|@)\d+\.\d+\.\d+([-+][0-9A-Za-z.-]+)?$")
+# Only these flags may come before the check's package, so nothing can change where the package comes from.
+CHECK_FLAGS = {"npx": {"-y", "--yes", "-q", "--quiet"}, "uvx": {"-q", "--quiet"}}
+SECRET_PROVIDER = {"kind": "1password", "token": "OP_SERVICE_ACCOUNT_TOKEN"}
 STDIO_KEYS = {"command", "args", "env", "allowedHosts", "oauthEnvironment"}
 HOST_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$")
 PRIVATE_SUFFIXES = (".local", ".internal", ".localhost")
@@ -163,12 +181,7 @@ def check_server(where: str, slug: str, config: object, errors: list[str]) -> No
         if not isinstance(env, dict):
             errors.append(f"{where}: server '{slug}' env must be an object")
             return
-        hosts = config.get("allowedHosts", [])
-        if (
-            not isinstance(hosts, list)
-            or len(hosts) > MAX_ALLOWED_HOSTS
-            or any(not isinstance(host, str) or not HOST_RE.match(host) or host.endswith(PRIVATE_SUFFIXES) for host in hosts)
-        ):
+        if not valid_hosts(config.get("allowedHosts", []), 0):
             errors.append(f"{where}: server '{slug}' allowedHosts must list at most {MAX_ALLOWED_HOSTS} lowercase public hostnames")
         oauth_environment = config.get("oauthEnvironment")
         if oauth_environment is not None and (
@@ -192,6 +205,67 @@ def check_server(where: str, slug: str, config: object, errors: list[str]) -> No
             errors.append(f"{where}: server '{slug}' has a non-string value")
             continue
         check_placeholders(f"{where} ({slug})", value, errors)
+
+
+def valid_hosts(hosts: object, minimum: int) -> bool:
+    return (
+        isinstance(hosts, list)
+        and minimum <= len(hosts) <= MAX_ALLOWED_HOSTS
+        and all(isinstance(host, str) and HOST_RE.match(host) and not host.endswith(PRIVATE_SUFFIXES) for host in hosts)
+    )
+
+
+def check_secrets(where: str, secrets: object, env_names: set[str], errors: list[str]) -> None:
+    if not isinstance(secrets, dict) or not 1 <= len(secrets) <= MAX_SECRETS:
+        errors.append(f"{where}: secrets must be an object of 1 to {MAX_SECRETS} entries")
+        return
+    for name, spec in secrets.items():
+        if not SECRET_NAME_RE.match(name) or name in REFUSED_SECRET_NAMES or name.startswith(REFUSED_SECRET_PREFIXES):
+            errors.append(f"{where}: secret name '{name}' must match {SECRET_NAME_RE.pattern} and is not a reserved environment name")
+        if name in env_names:
+            errors.append(f"{where}: secret '{name}' repeats an MCP server env name")
+        if not isinstance(spec, dict) or set(spec) - SECRET_KEYS:
+            errors.append(f"{where}: secret '{name}' must be an object with only 'description' and 'optional'")
+            continue
+        description = spec.get("description")
+        if not isinstance(description, str) or not description.strip() or len(description) > 512:
+            errors.append(f"{where}: secret '{name}' needs a description of 1 to 512 characters")
+        if "optional" in spec and not isinstance(spec["optional"], bool):
+            errors.append(f"{where}: secret '{name}' optional must be a boolean")
+
+
+def check_connection_check(where: str, check: object, errors: list[str]) -> None:
+    if not isinstance(check, dict):
+        errors.append(f"{where}: connectionCheck must be an object")
+        return
+    extra = set(check) - CHECK_KEYS
+    if extra:
+        errors.append(f"{where}: connectionCheck has unexpected keys {sorted(extra)}")
+    command = check.get("command")
+    if command not in CHECK_COMMANDS:
+        errors.append(f"{where}: connectionCheck command must be 'npx' or 'uvx'")
+    args = check.get("args")
+    if (
+        not isinstance(args, list)
+        or not 1 <= len(args) <= MAX_CHECK_ARGS
+        or any(not isinstance(arg, str) or len(arg) > MAX_CHECK_ARG_CHARS or "\x00" in arg for arg in args)
+    ):
+        errors.append(f"{where}: connectionCheck args must list 1 to {MAX_CHECK_ARGS} strings of at most {MAX_CHECK_ARG_CHARS} characters")
+        args = []
+    if any(PLACEHOLDER_RE.search(arg) for arg in args):
+        errors.append(f"{where}: connectionCheck args must not contain ${{...}} placeholders; secrets reach the check through its environment")
+    at = next((index for index, arg in enumerate(args) if not arg.startswith("-")), None)
+    package = None if at is None else args[at]
+    if command in CHECK_COMMANDS and any(flag not in CHECK_FLAGS[command] for flag in args[: at if at is not None else len(args)]):
+        errors.append(f"{where}: connectionCheck flags before its package may only be {', '.join(sorted(CHECK_FLAGS[command]))}")
+    pinned = NPX_PINNED_RE if command == "npx" else UVX_PINNED_RE
+    if command in CHECK_COMMANDS and (package is None or not pinned.match(package)):
+        errors.append(f"{where}: connectionCheck must run a pinned package (pkg@1.2.3{', or pkg==1.2.3' if command == 'uvx' else ''}), not '{package}'")
+    if not valid_hosts(check.get("allowedHosts"), 1):
+        errors.append(f"{where}: connectionCheck allowedHosts must list 1 to {MAX_ALLOWED_HOSTS} lowercase public hostnames")
+    timeout = check.get("timeoutSeconds", 60)
+    if not isinstance(timeout, (int, float)) or isinstance(timeout, bool) or not float(timeout).is_integer() or not 5 <= timeout <= 120:
+        errors.append(f"{where}: connectionCheck timeoutSeconds must be an integer from 5 to 120")
 
 
 def check_logo(where: str, slug: str, logo: object, errors: list[str]) -> None:
@@ -238,11 +312,25 @@ def check_local_plugin(slug: str, local: set[str], errors: list[str]) -> None:
     dependencies = data.get("dependencies", [])
     if not isinstance(dependencies, list) or any(not isinstance(item, str) or item == slug or item not in local for item in dependencies):
         errors.append(f"{where}: dependencies must list other plugins authored here by slug")
+    if "secretProvider" in data and (data["secretProvider"] != SECRET_PROVIDER or slug != SECRET_PROVIDER["kind"]):
+        errors.append(f"{where}: secretProvider is only for plugins/{SECRET_PROVIDER['kind']} and must be exactly {compact(SECRET_PROVIDER)}")
+    if "secretProvider" in data and any(key in data for key in ("secrets", "connectionCheck", "mcpServers")):
+        errors.append(f"{where}: a secretProvider plugin declares no other secrets, check or MCP server")
+    if "connectionCheck" in data:
+        if "secrets" not in data:
+            errors.append(f"{where}: connectionCheck needs secrets to check")
+        check_connection_check(where, data["connectionCheck"], errors)
     servers = data.get("mcpServers")
-    if not isinstance(servers, dict) or len(servers) != 1 or slug not in servers:
-        errors.append(f"{where}: mcpServers must declare exactly one server named '{slug}'")
-        return
-    check_server(where, slug, servers[slug], errors)
+    env_names: set[str] = set()
+    if servers is not None or not ("secrets" in data or "secretProvider" in data):
+        if not isinstance(servers, dict) or len(servers) != 1 or slug not in servers:
+            errors.append(f"{where}: mcpServers must declare exactly one server named '{slug}', or the plugin must declare secrets or a secretProvider")
+            return
+        check_server(where, slug, servers[slug], errors)
+        env = servers[slug].get("env") if isinstance(servers[slug], dict) else None
+        env_names = set(env) if isinstance(env, dict) else set()
+    if "secrets" in data:
+        check_secrets(where, data["secrets"], env_names, errors)
 
 
 def canonical(data: dict) -> str:
@@ -323,6 +411,20 @@ def local_listing(slug: str) -> tuple[dict, str]:
         listing["homepage"] = manifest["homepage"]
     listing["dependencies"] = [{"name": name, "ref": None} for name in manifest.get("dependencies", [])]
     listing["mcpServers"] = sorted(manifest.get("mcpServers", {}))
+    if "secrets" in manifest:
+        listing["secrets"] = [
+            {"name": name, "description": spec["description"], "optional": spec.get("optional", False)} for name, spec in sorted(manifest["secrets"].items())
+        ]
+    if "connectionCheck" in manifest:
+        check = manifest["connectionCheck"]
+        listing["connectionCheck"] = {
+            "command": check["command"],
+            "args": check["args"],
+            "allowedHosts": check["allowedHosts"],
+            "timeoutSeconds": check.get("timeoutSeconds", 60),
+        }
+    if "secretProvider" in manifest:
+        listing["secretProvider"] = manifest["secretProvider"]
     logo = manifest.get("logo")
     logo_entry = next((entry for entry in entries if isinstance(logo, str) and entry["path"] == logo), None)
     if logo_entry is not None and logo_entry["bytes"] <= MAX_LOGO_BYTES and Path(logo).suffix.lower() in LOGO_TYPES:

@@ -1,0 +1,15 @@
+{
+  "name": "1password",
+  "displayName": "1Password",
+  "description": "Connect a 1Password service account so other plugins' secrets can be saved as op:// secret references that Opulent resolves at runtime, instead of pasting the values. Only Opulent's resolver reads the service account token: it is never exported to a machine's shell or to an MCP server. Create the service account with read-only access (read_items) to only the vaults plugins may use; its vault grants are the whole scope.",
+  "homepage": "https://1password.com",
+  "repository": "https://github.com/1Password/onepassword-sdk-js",
+  "logo": "logo.svg",
+  "keywords": [
+    "Development Tools"
+  ],
+  "secretProvider": {
+    "kind": "1password",
+    "token": "OP_SERVICE_ACCOUNT_TOKEN"
+  }
+}
