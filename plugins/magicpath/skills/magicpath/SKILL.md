@@ -11,7 +11,10 @@ numeric id, a generated name such as `wispy-river-5234`, and revisions; componen
 Work through the `magicpath` MCP server's tools. They run the pinned magicpath-ai CLI on this machine with the owner's
 MagicPath session, so never run `npx magicpath-ai` or `magicpath-ai login` yourself, and never ask for or print a
 token. If a tool reports that MagicPath is not connected or rejected the saved credentials, tell the user to connect
-MagicPath in Customize → Marketplace and stop.
+MagicPath in Customize → Marketplace and stop. If it reports that the saved session expired, tell the user to sign in
+again with `npx magicpath-ai login` on their own computer, save the new accessToken and refreshToken from
+`~/.magicpath/session.json` as MAGICPATH_TOKEN and MAGICPATH_REFRESH_TOKEN in Customize → Marketplace, and stop. If
+it reports that MagicPath is unavailable, say so and retry later rather than asking the user to reconnect.
 
 ## Find and read
 

@@ -3412,8 +3412,8 @@
     "sha256": "d3c261c132e56841924c7db046eb3958036f0dc29fb6066235d4c2e9a4ed3668"
    },
    "fileCount": 3,
-   "bytes": 26626,
-   "contentHash": "sha256:98b0d718d90a95bb46fb3fb76d9abaf0c3f5fe6a4746af1ff48f0afc4d30ff64",
+   "bytes": 27028,
+   "contentHash": "sha256:ecf2a5bf3b77e2bca70c0f87e9f023dcd925c43e14b704942e542d603ecf2905",
    "bundle": "catalog/bundles/magicpath.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/magicpath"
