@@ -940,14 +940,14 @@
   {
    "name": "buildkite",
    "displayName": "Buildkite",
-   "description": "Buildkite's hosted MCP server: inspect pipelines, builds, jobs and logs, trigger and retry builds, and look up test analytics and cluster/agent status.",
+   "description": "Buildkite's official remote MCP server, connected with a Buildkite API access token: inspect pipelines, builds, jobs and logs, trigger and retry builds, and look up test analytics and cluster and agent status. The token's scopes decide what the agent can do, so grant read scopes only unless it should start or cancel builds. Includes a pipeline template that mints a short-lived Entire service-account session through Buildkite OIDC.",
    "category": "Development Tools",
    "keywords": [
     "Development Tools"
    ],
    "path": "plugins/buildkite",
    "manifestPath": ".opulent-plugin/plugin.json",
-   "homepage": "https://buildkite.com",
+   "homepage": "https://buildkite.com/docs/apis/mcp-server",
    "dependencies": [],
    "mcpServers": [
     "buildkite"
@@ -958,9 +958,9 @@
     "bytes": 478,
     "sha256": "32d45e2a770e5198bd0b12da30a43c3f560a54dd182a970fb32949e91f807a3f"
    },
-   "fileCount": 2,
-   "bytes": 960,
-   "contentHash": "sha256:ce7c5cdec4f9d7ffc503a65aaa7b0979dbe412952caa1d41ddfdad62f322ad9f",
+   "fileCount": 6,
+   "bytes": 15877,
+   "contentHash": "sha256:9b1d823e790ef7e4a80391c2a37e046cfeba92597f98809f03cd5480b8f6a089",
    "bundle": "catalog/bundles/buildkite.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/buildkite"

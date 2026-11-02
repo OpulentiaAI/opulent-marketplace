@@ -1,0 +1,12 @@
+# Mint a short-lived Entire session for the opulent-managed-broker service account through Buildkite OIDC.
+# Copy scripts/mint-entire-session.sh to .buildkite/scripts/ in the repository, then add this step.
+# The service account's OIDC binding must admit this pipeline (see the entire-oidc-session skill).
+steps:
+  - label: ":lock: Entire session (opulent-managed-broker)"
+    key: entire-session
+    env:
+      ENTIRE_SERVICE_ACCOUNT_ID: svc_01M6CJT6RC0J6TPA9CFPYYR4DR
+    command:
+      - .buildkite/scripts/mint-entire-session.sh --provider buildkite --check
+      # Run a command as the service account. ENTIRE_TOKEN reaches only this command:
+      # - .buildkite/scripts/mint-entire-session.sh --provider buildkite -- entire auth status
