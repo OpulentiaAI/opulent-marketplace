@@ -1,0 +1,17 @@
+{
+  "name": "convex",
+  "displayName": "Convex",
+  "description": "Unavailable pending isolated MCP runtime support. Convex's official server supports read-only status, tables, data, function specifications, insights and bounded cursor-based execution-log fetches, not streaming or event subscriptions. Requires a deployment-scoped deploy key selected by Secret name and a validated deployment hostname grant. Function execution and environment-variable tools are disabled; the shared-UID broker must not receive the key.",
+  "homepage": "https://docs.convex.dev/cli/reference/mcp",
+  "repository": "https://github.com/get-convex/convex-js",
+  "logo": "logo.png",
+  "keywords": ["Databases"],
+  "mcpServers": {
+    "convex": {
+      "command": "npx",
+      "args": ["-y", "convex@1.49.0", "mcp", "start", "--cautiously-allow-production-pii", "--disable-tools", "run,runOneoffQuery,envGet,envList,envSet,envRemove"],
+      "env": {"CONVEX_DEPLOY_KEY": "${CONVEX_DEPLOY_KEY}"},
+      "allowedHosts": ["api.convex.dev"]
+    }
+  }
+}

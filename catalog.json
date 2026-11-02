@@ -1842,6 +1842,35 @@
    ]
   },
   {
+   "name": "convex",
+   "displayName": "Convex",
+   "description": "Unavailable pending isolated MCP runtime support. Convex's official server supports read-only status, tables, data, function specifications, insights and bounded cursor-based execution-log fetches, not streaming or event subscriptions. Requires a deployment-scoped deploy key selected by Secret name and a validated deployment hostname grant. Function execution and environment-variable tools are disabled; the shared-UID broker must not receive the key.",
+   "category": "Databases",
+   "keywords": [
+    "Databases"
+   ],
+   "path": "plugins/convex",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://docs.convex.dev/cli/reference/mcp",
+   "dependencies": [],
+   "mcpServers": [
+    "convex"
+   ],
+   "logo": {
+    "path": "logo.png",
+    "mediaType": "image/png",
+    "bytes": 2050,
+    "sha256": "a93f37ca9682892816a1c30a195f7630542550d6d1fcf96b7519a37c25e1e773"
+   },
+   "fileCount": 3,
+   "bytes": 5524,
+   "contentHash": "sha256:fabf7acafa30d0fc13f251f62548c63e4e85548d993ddfaf1416278f320d516a",
+   "bundle": "catalog/bundles/convex.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/convex"
+   ]
+  },
+  {
    "name": "corridor",
    "displayName": "Corridor",
    "description": "Corridor adds AI code security guardrails directly into your development workflow, helping to identify and fix security vulnerabilities as you code.",
