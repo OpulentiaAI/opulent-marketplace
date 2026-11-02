@@ -124,6 +124,7 @@
     "./plugins/logrocket",
     "./plugins/lovable",
     "./plugins/lunarcrush",
+    "./plugins/magicpath",
     "./plugins/mailerlite",
     "./plugins/mapbox",
     "./plugins/mapbox-devkit",
