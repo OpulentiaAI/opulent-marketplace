@@ -61,6 +61,22 @@ class LocalPluginTest(unittest.TestCase):
                 check = {**CHECK, "args": ["-y", package, "projects", "list"]}
                 self.assertTrue(any("pinned package" in e for e in self.errors({"secrets": SECRETS, "connectionCheck": check})))
 
+    def test_check_matches_the_runtime_parser(self) -> None:
+        refused = [
+            {**CHECK, "args": ["--registry=https://evil.example", "-y", "@depot/cli@2.101.0"]},
+            {**CHECK, "args": ["--package=evil", "@depot/cli@2.101.0"]},
+            {**CHECK, "args": ["-y", "@depot/cli@v2.101.0"]},
+            {**CHECK, "args": ["-y", "@depot/cli@2.101.0", "bad\x00arg"]},
+            {**CHECK, "command": "uvx", "args": ["depot==1.2"]},
+            {**CHECK, "command": "uvx", "args": ["--from", "evil", "depot==1.2.3"]},
+        ]
+        for check in refused:
+            with self.subTest(args=check["args"]):
+                self.assertNotEqual(self.errors({"secrets": SECRETS, "connectionCheck": check}), [])
+        self.assertEqual(self.errors({"secrets": SECRETS, "connectionCheck": {**CHECK, "timeoutSeconds": 60.0}}), [])
+        self.assertEqual(self.errors({"secrets": SECRETS, "connectionCheck": {**CHECK, "command": "uvx", "args": ["-q", "depot[cli]==1.2.3"]}}), [])
+        self.assertTrue(any("description" in e for e in self.errors({"secrets": {"DEPOT_TOKEN": {"description": "   "}}})))
+
     def test_check_needs_secrets(self) -> None:
         server = {"depot": {"url": "https://mcp.depot.dev/mcp"}}
         self.assertTrue(any("needs secrets" in e for e in self.errors({"mcpServers": server, "connectionCheck": CHECK})))
@@ -70,6 +86,8 @@ class LocalPluginTest(unittest.TestCase):
         self.assertEqual(self.errors({"secretProvider": provider}, slug="1password"), [])
         self.assertTrue(any("secretProvider" in e for e in self.errors({"secretProvider": {**provider, "token": "OTHER"}}, slug="1password")))
         self.assertTrue(any("secretProvider" in e for e in self.errors({"secretProvider": provider, "secrets": SECRETS})))
+        self.assertTrue(any("no other secrets" in e for e in self.errors({"secretProvider": provider, "secrets": SECRETS}, slug="1password")))
+        self.assertTrue(any("no other secrets" in e for e in self.errors({"secretProvider": provider, "mcpServers": {"1password": {"url": "https://example.com/mcp"}}}, slug="1password")))
 
     def test_neither_mcp_nor_secrets(self) -> None:
         self.assertTrue(any("mcpServers must declare exactly one server" in e for e in self.errors({})))
