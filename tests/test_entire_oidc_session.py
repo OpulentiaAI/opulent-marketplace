@@ -151,7 +151,7 @@ class MintEntireSession(unittest.TestCase):
                 self.assertNotIn(secret, log)
 
     def test_every_plugin_ships_the_same_template(self) -> None:
-        self.assertGreaterEqual(len(SCRIPTS), 1)
+        self.assertEqual({script.parts[-5] for script in SCRIPTS}, {"buildkite", "depot"})
         for script in SCRIPTS:
             self.assertEqual(script.read_bytes(), SCRIPTS[0].read_bytes(), script)
             self.assertTrue(os.access(script, os.X_OK), script)

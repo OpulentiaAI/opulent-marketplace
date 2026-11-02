@@ -2136,6 +2136,55 @@
    ]
   },
   {
+   "name": "depot",
+   "displayName": "Depot",
+   "description": "Depot CI, container builds and GitHub Actions runners through Depot's official CLI (@depot/cli@0.0.1-cli.2.103.6, Depot CLI 2.103.6), run with the owner's Depot API token as DEPOT_TOKEN. Depot has no official MCP server, so the skills drive the pinned CLI from the shell: run workflows against local changes, read run status, logs and failure diagnoses, retry jobs, and list projects and builds. Includes a workflow template that mints a short-lived Entire service-account session through Depot CI OIDC.",
+   "category": "Development Tools",
+   "keywords": [
+    "Development Tools"
+   ],
+   "path": "plugins/depot",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://depot.dev/docs/ai-at-depot",
+   "dependencies": [],
+   "mcpServers": [],
+   "secrets": [
+    {
+     "name": "DEPOT_TOKEN",
+     "description": "Depot API token: an organization token from Depot → Settings → API tokens, or a personal token from depot login. The Depot CLI reads it from the environment.",
+     "optional": false
+    }
+   ],
+   "connectionCheck": {
+    "command": "npx",
+    "args": [
+     "-y",
+     "@depot/cli@0.0.1-cli.2.103.6",
+     "projects",
+     "list",
+     "--output",
+     "json"
+    ],
+    "allowedHosts": [
+     "api.depot.dev"
+    ],
+    "timeoutSeconds": 60
+   },
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 1617,
+    "sha256": "9afe05e7828f67292cf31e8e66d67d8b255d283485096874c7a3a5a2fdb52824"
+   },
+   "fileCount": 7,
+   "bytes": 19374,
+   "contentHash": "sha256:cdbfa3d7f12b43009b61d53a861e1ac4c9bd30e640e2508b6fa81f5f333500af",
+   "bundle": "catalog/bundles/depot.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/depot"
+   ]
+  },
+  {
    "name": "dockerhub",
    "displayName": "Docker Hub",
    "description": "Retrieve and manage Docker Hub repositories and tags with ease: check repo/tag existence, list namespaces, repositories, tags, and Docker Hardened Images and more.",

@@ -1,0 +1,32 @@
+{
+  "name": "depot",
+  "displayName": "Depot",
+  "description": "Depot CI, container builds and GitHub Actions runners through Depot's official CLI (@depot/cli@0.0.1-cli.2.103.6, Depot CLI 2.103.6), run with the owner's Depot API token as DEPOT_TOKEN. Depot has no official MCP server, so the skills drive the pinned CLI from the shell: run workflows against local changes, read run status, logs and failure diagnoses, retry jobs, and list projects and builds. Includes a workflow template that mints a short-lived Entire service-account session through Depot CI OIDC.",
+  "homepage": "https://depot.dev/docs/ai-at-depot",
+  "repository": "https://github.com/depot/cli",
+  "logo": "logo.svg",
+  "keywords": [
+    "Development Tools"
+  ],
+  "secrets": {
+    "DEPOT_TOKEN": {
+      "description": "Depot API token: an organization token from Depot → Settings → API tokens, or a personal token from depot login. The Depot CLI reads it from the environment.",
+      "optional": false
+    }
+  },
+  "connectionCheck": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@depot/cli@0.0.1-cli.2.103.6",
+      "projects",
+      "list",
+      "--output",
+      "json"
+    ],
+    "allowedHosts": [
+      "api.depot.dev"
+    ],
+    "timeoutSeconds": 60
+  }
+}
