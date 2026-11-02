@@ -3393,7 +3393,7 @@
   {
    "name": "magicpath",
    "displayName": "MagicPath",
-   "description": "Search, inspect, install, export, create and edit MagicPath UI components from the agent. Runs Opulent's MagicPath bridge over the magicpath-ai 2.6.1 CLI, which Opulent machine images install pinned and integrity-checked, with your MagicPath CLI session: after `npx magicpath-ai login`, ~/.magicpath/session.json holds accessToken (save it as MAGICPATH_TOKEN) and refreshToken (MAGICPATH_REFRESH_TOKEN). When the access token expires or MagicPath rejects it, the bridge renews with the refresh token, so it keeps working until you sign out. Connecting proves the session with a real authenticated call. Tools: magicpath_info, magicpath_search, magicpath_inspect, magicpath_list_projects, magicpath_list_components and magicpath_code_status read; magicpath_add and magicpath_code_export write files only in the workspace; magicpath_code_start and magicpath_code_submit create or change components on your MagicPath canvas.",
+   "description": "Search, inspect, install, export, create and edit MagicPath UI components from the agent. Runs Opulent's MagicPath bridge over the magicpath-ai 2.6.1 CLI, which Opulent machine images install pinned and integrity-checked, with your MagicPath CLI session: after `npx magicpath-ai login`, ~/.magicpath/session.json holds accessToken (save it as MAGICPATH_TOKEN) and refreshToken (MAGICPATH_REFRESH_TOKEN). When the access token expires or MagicPath rejects it, the bridge switches to the refresh token, which MagicPath issues for a year; when both have expired, sign in again and save the new pair. Connecting proves the session with a real authenticated call. Tools: magicpath_info, magicpath_search, magicpath_inspect, magicpath_list_projects, magicpath_list_components and magicpath_code_status read; magicpath_add and magicpath_code_export write files only in the workspace and never run a package manager; magicpath_code_start and magicpath_code_submit create or change components on your MagicPath canvas.",
    "category": "Design & Creative",
    "keywords": [
     "Design & Creative"
@@ -3412,8 +3412,8 @@
     "sha256": "d3c261c132e56841924c7db046eb3958036f0dc29fb6066235d4c2e9a4ed3668"
    },
    "fileCount": 3,
-   "bytes": 26116,
-   "contentHash": "sha256:e3236a777f9284ae17e74a1a537533d929d24552ea9c8c8fee3c33b4835c045a",
+   "bytes": 26626,
+   "contentHash": "sha256:98b0d718d90a95bb46fb3fb76d9abaf0c3f5fe6a4746af1ff48f0afc4d30ff64",
    "bundle": "catalog/bundles/magicpath.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/magicpath"

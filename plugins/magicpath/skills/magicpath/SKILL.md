@@ -25,10 +25,13 @@ When a search finds several plausible matches, show the user the names and proje
 
 ## Install into this repository
 
-`magicpath_add` writes components as source into the workspace (default `src/components/magicpath`, or `path`).
-Run it with `dryRun` first when the target already has files, then install, add the reported npm dependencies with
-the repository's own package manager, and import the component as the returned import statement shows. Only
-`overwrite` when the user asked to replace what is there.
+`magicpath_add` writes components as source into `projectDir`, the directory holding the app's `package.json`
+(default the workspace root; pass the app's directory in a monorepo). The component goes under `path` (default
+`src/components/magicpath`, relative to `projectDir`) and the shared `cn` helper into `src/lib/utils.ts`. Run it with
+`dryRun` first when the target already has files. It never runs a package manager: install the `dependenciesToInstall`
+it returns with the repository's own package manager, then import the component as the returned import statement
+shows. Only `overwrite` when the user asked to replace what is there. Target directories must stay inside the
+workspace and hold no symlinks.
 
 ## Export an exact revision
 
@@ -51,9 +54,10 @@ user asked for canvas work, and never in a test.
    custom CSS below them, and never use `@tailwind` directives. Deleting a file in edit mode deletes it on submit.
 3. Build a real, interactive React component: controlled inputs, working handlers, hover, focus and disabled states,
    responsive layout without device mockups, one screen per component (use state for multi-view flows).
-4. `magicpath_code_submit` sends the changed files and waits for the build. If it fails, fix the files and submit
-   again. If it reports a stale base or conflict, start the session again and reapply the edits. `magicpath_code_status`
-   reads a build job when you submitted with `wait: false`.
+4. `magicpath_code_submit` sends the changed files and returns the build job at once. Follow it with
+   `magicpath_code_status` until it finishes. If the build fails, fix the files and submit again. If it reports a stale
+   base or conflict, start the session again and reapply the edits. Never resubmit when a submission's outcome is
+   unknown; check the job with `magicpath_code_status` first.
 
 MagicPath's own agent guide, which this skill condenses for Opulent's tools, is
 https://github.com/MagicPathAI/agent-skills/tree/a1ced96ad9da6c65d9f57d9fef79d944f7192dfe/skills/magicpath.
