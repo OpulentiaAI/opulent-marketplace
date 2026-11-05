@@ -10,10 +10,12 @@ DEPOT_TOKEN comes from the Depot plugin's saved secret; see the depot-ci skill f
 
 ## Read
 
-- depot projects list --output json lists the organization's projects. The plugin's connection check runs exactly
-  this command.
+- depot list jobs --output json lists recent GitHub Actions jobs that ran on Depot runners. The plugin's connection
+  check runs exactly this command because an organization token is accepted for it.
+- depot projects list --output json lists the organization's projects, but Depot refuses it with "permission_denied:
+  Not authorized" for an organization API token, which is a valid token and not a missing or revoked one. Take a
+  project id from depot.json or the user instead.
 - depot list builds --project <project-id> lists a project's builds. depot.json in a repository names its project.
-- depot jobs and depot list jobs show GitHub Actions jobs that ran on Depot runners.
 
 ## Build
 
