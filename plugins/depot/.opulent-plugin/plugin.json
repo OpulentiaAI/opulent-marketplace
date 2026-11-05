@@ -19,8 +19,8 @@
     "args": [
       "-y",
       "@depot/cli@0.0.1-cli.2.103.6",
-      "projects",
       "list",
+      "jobs",
       "--output",
       "json"
     ],
