@@ -1,0 +1,19 @@
+{
+  "name": "maple-api-key",
+  "displayName": "Maple (API key)",
+  "description": "Maple's official remote MCP server for OpenTelemetry observability. Query services, traces, logs, metrics, errors, session replays and agent sessions, and run read-only SQL. It also has write tools that triage error issues, edit dashboards, and create or delete alert rules, silences and on-call schedules, and Opulent allows every tool the server lists once it is connected. To keep the agent read-only, open the plugin's sheet after connecting, expand Tools \u2192 Limit tools (advanced), uncheck the write tools and save. Connects to the US region (api.maple.dev) with a Maple API key or MCP key (maple_ak_\u2026); a restricted API key's scopes also limit what the tools can do.",
+  "homepage": "https://maple.dev/docs/reference/mcp",
+  "repository": "https://github.com/MapleTechLabs/maple",
+  "logo": "logo.svg",
+  "keywords": [
+    "Monitoring & Analytics"
+  ],
+  "mcpServers": {
+    "maple-api-key": {
+      "url": "https://api.maple.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MAPLE_API_KEY}"
+      }
+    }
+  }
+}

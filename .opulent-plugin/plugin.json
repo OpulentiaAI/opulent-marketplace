@@ -130,6 +130,8 @@
     "./plugins/mapbox",
     "./plugins/mapbox-devkit",
     "./plugins/mapbox-docs",
+    "./plugins/maple",
+    "./plugins/maple-api-key",
     "./plugins/meltwater",
     "./plugins/mem",
     "./plugins/mercury",
