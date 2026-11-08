@@ -1,0 +1,16 @@
+{
+  "name": "maple",
+  "displayName": "Maple (OAuth)",
+  "description": "Maple's official remote MCP server for OpenTelemetry observability. Query services, traces, logs, metrics, errors, session replays and agent sessions, and run read-only SQL. It also has write tools that triage error issues, edit dashboards, and create or delete alert rules, silences and on-call schedules, and Opulent allows every tool the server lists once it is connected. To keep the agent read-only, open the plugin's sheet after connecting, expand Tools \u2192 Limit tools (advanced), uncheck the write tools and save. Signs in with OAuth on the US region (api.maple.dev).",
+  "homepage": "https://maple.dev/docs/reference/mcp",
+  "repository": "https://github.com/MapleTechLabs/maple",
+  "logo": "logo.svg",
+  "keywords": [
+    "Monitoring & Analytics"
+  ],
+  "mcpServers": {
+    "maple": {
+      "url": "https://api.maple.dev/mcp"
+    }
+  }
+}

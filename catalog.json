@@ -3645,6 +3645,64 @@
    ]
   },
   {
+   "name": "maple",
+   "displayName": "Maple (OAuth)",
+   "description": "Maple's official remote MCP server for OpenTelemetry observability. Query services, traces, logs, metrics, errors, session replays and agent sessions, and run read-only SQL. It also has write tools that triage error issues, edit dashboards, and create or delete alert rules, silences and on-call schedules, and Opulent allows every tool the server lists once it is connected. To keep the agent read-only, open the plugin's sheet after connecting, expand Tools → Limit tools (advanced), uncheck the write tools and save. Signs in with OAuth on the US region (api.maple.dev).",
+   "category": "Monitoring & Analytics",
+   "keywords": [
+    "Monitoring & Analytics"
+   ],
+   "path": "plugins/maple",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://maple.dev/docs/reference/mcp",
+   "dependencies": [],
+   "mcpServers": [
+    "maple"
+   ],
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 2187,
+    "sha256": "884b0eb4cf206cf9ab27783d67633baf9d5bef1f9ab2fb0e2248382f5ac0cdfa"
+   },
+   "fileCount": 2,
+   "bytes": 3111,
+   "contentHash": "sha256:5bf734319af27e80339bb839596eb95f782a9abefbb6e914678121cb285ee356",
+   "bundle": "catalog/bundles/maple.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/maple"
+   ]
+  },
+  {
+   "name": "maple-api-key",
+   "displayName": "Maple (API key)",
+   "description": "Maple's official remote MCP server for OpenTelemetry observability. Query services, traces, logs, metrics, errors, session replays and agent sessions, and run read-only SQL. It also has write tools that triage error issues, edit dashboards, and create or delete alert rules, silences and on-call schedules, and Opulent allows every tool the server lists once it is connected. To keep the agent read-only, open the plugin's sheet after connecting, expand Tools → Limit tools (advanced), uncheck the write tools and save. Connects to the US region (api.maple.dev) with a Maple API key or MCP key (maple_ak_…); a restricted API key's scopes also limit what the tools can do.",
+   "category": "Monitoring & Analytics",
+   "keywords": [
+    "Monitoring & Analytics"
+   ],
+   "path": "plugins/maple-api-key",
+   "manifestPath": ".opulent-plugin/plugin.json",
+   "homepage": "https://maple.dev/docs/reference/mcp",
+   "dependencies": [],
+   "mcpServers": [
+    "maple-api-key"
+   ],
+   "logo": {
+    "path": "logo.svg",
+    "mediaType": "image/svg+xml",
+    "bytes": 2187,
+    "sha256": "884b0eb4cf206cf9ab27783d67633baf9d5bef1f9ab2fb0e2248382f5ac0cdfa"
+   },
+   "fileCount": 2,
+   "bytes": 3311,
+   "contentHash": "sha256:74f22b0f2ba52b96ec839e40330fabf96da87bba086374c7e16cb5382fddf076",
+   "bundle": "catalog/bundles/maple-api-key.json",
+   "legacyIdentities": [
+    "github.com/cognitionai/devin-marketplace/plugins/maple-api-key"
+   ]
+  },
+  {
    "name": "meltwater",
    "displayName": "Meltwater",
    "description": "Meltwater's hosted MCP server: search media and social mentions and pull media-intelligence analytics.",
