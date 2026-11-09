@@ -2189,8 +2189,8 @@
     "args": [
      "-y",
      "@depot/cli@0.0.1-cli.2.103.6",
-     "projects",
      "list",
+     "jobs",
      "--output",
      "json"
     ],
@@ -2206,8 +2206,8 @@
     "sha256": "9afe05e7828f67292cf31e8e66d67d8b255d283485096874c7a3a5a2fdb52824"
    },
    "fileCount": 7,
-   "bytes": 19374,
-   "contentHash": "sha256:cdbfa3d7f12b43009b61d53a861e1ac4c9bd30e640e2508b6fa81f5f333500af",
+   "bytes": 19635,
+   "contentHash": "sha256:11c87d65e843ffcb344b6862fcd2880854187ceb15056f75c2ebf3b75beecac8",
    "bundle": "catalog/bundles/depot.json",
    "legacyIdentities": [
     "github.com/cognitionai/devin-marketplace/plugins/depot"
